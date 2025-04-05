@@ -1,0 +1,4 @@
+Alice: Let's review the roadmap. We need to push the UI update by April 10.
+Bob: I’ll handle the homepage redesign.
+Clara: I’ll run load testing before launch, maybe April 15?
+Dan: Who's finalizing the backlog?
