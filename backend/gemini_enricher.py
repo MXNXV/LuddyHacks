@@ -2,9 +2,14 @@ import json
 import re
 import os
 import google.generativeai as genai
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Configure Gemini API
-API_KEY = "AIzaSyDoxmAqYNKVU0kniaLqp5tHJF_Qw0KxPgA"
+API_KEY = os.getenv("API_KEY")
+# print(API_KEY)
 genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
 
@@ -89,6 +94,7 @@ Input ideas:
     # === Try to Parse Response ===
     try:
         updated_ideas = json.loads(raw_response)
+        print(updated_ideas)
     except json.JSONDecodeError:
         print("Could not parse AI response as valid JSON. Attempting regex fallback.")
         match = re.search(r'\[.*\]', raw_response, re.DOTALL)
