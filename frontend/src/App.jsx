@@ -1,46 +1,61 @@
-import { useState, useEffect } from 'react' // Import useEffect
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Moon, Sun } from 'lucide-react';
+import { Toaster } from "@/components/ui/sonner"
+import IdeaList from './components/IdeaList'; // Import the new component
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [message, setMessage] = useState(''); // State to hold the backend message
 
-  // Fetch data from backend when component mounts
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedMode = localStorage.getItem('darkMode');
+      return savedMode === 'true';
+    }
+    return false;
+  });
+
   useEffect(() => {
-    fetch('http://localhost:8000/') // Assuming backend runs on port 8000
-      .then(response => response.json())
-      .then(data => setMessage(data.message))
-      .catch(error => console.error('Error fetching data:', error));
-  }, []); // Empty dependency array means this runs once on mount
+    const root = window.document.documentElement;
+    root.classList.toggle('dark', isDarkMode);
+    localStorage.setItem('darkMode', isDarkMode);
+  }, [isDarkMode]);
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className={`min-h-screen bg-background text-foreground transition-colors duration-200 ${isDarkMode ? 'dark' : ''}`}>
+      {/* Header acting as Navbar */}
+
+    <header className="py-4 px-6 border-b border-border flex justify-between items-center sticky top-0 bg-background/80 backdrop-blur-sm z-10">
+      <h1 className="text-2xl font-bold text-foreground">Innovation Hub</h1>
+      <div className="flex items-center gap-2"> {/* Wrap buttons */}
+        <Button>Action</Button>
+        <Button variant="ghost" size="icon" onClick={() => setIsDarkMode(!isDarkMode)} aria-label="Toggle dark mode">
+          {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </Button>
       </div>
-      <h1>Vite + React</h1>
-      {/* Display the message from the backend */}
-      <p>Message from backend: {message}</p>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </header>
+      <div className="flex justify-center py-4">
+        <input type="text" placeholder="Search ideas..." className="border border-border rounded-lg p-2 w-full max-w-md" />
+      </div> 
+
+
+
+      {/* Main content area */}
+      <main className="container mx-auto px-4 py-8 md:py-12">
+        {/* Remove placeholder content */}
+        {/* <h2 className="text-3xl font-semibold mb-4">Welcome to the Homepage!</h2>
+        <p className="text-muted-foreground">
+          This is the main content area. You can add your components and features here.
+        </p> */}
+
+        {/* Render the IdeaList component */}
+        <IdeaList />
+
+      </main>
+
+      <Toaster richColors theme={isDarkMode ? 'dark' : 'light'} />
+    </div>
+  );
 }
 
-export default App
+export default App;
