@@ -2,7 +2,7 @@
 
 *Service WOW* is a full-stack web platform that enables teams to submit, evaluate, and analyze innovative ideas in real time. It integrates a responsive UI with an AI-enhanced backend that automatically scores and prioritizes submitted ideas using Google's Gemini model, providing leaders with actionable insights.
 
-> **IUB Luddy Hackathon Fall 2024 Submission**
+> **IUB Luddy Hackathon Spring 2025 Submission**
 
 ---
 
