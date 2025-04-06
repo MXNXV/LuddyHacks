@@ -131,8 +131,8 @@ src/
 ## 🏆 Our Luddy Hackathon Fall 2024 Team
 
 - Aamir Hullur - Frontend Development & Project Management
-- Atharva Gupta - Backend & Firebase Integration
-- Manav Patel - AI Integration & Prompt Engineering
+- Atharva Gurav - Backend & Firebase Integration
+- Manav Mandal - AI Integration & Prompt Engineering
 
 ---
 
