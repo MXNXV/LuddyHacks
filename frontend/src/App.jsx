@@ -32,7 +32,6 @@ function App() {
 
   return (
     <div className={`min-h-screen flex flex-col bg-background text-foreground transition-colors duration-200 ${isDarkMode ? 'dark' : ''}`}>
-
       <header className="py-4 px-6 border-b border-border flex justify-between items-center sticky top-0 bg-background/80 backdrop-blur-sm z-10">
         <Link to="/" className='flex items-baseline gap-1'>
           <span className='text-2xl font-bold text-foreground'>Service</span>
@@ -48,7 +47,6 @@ function App() {
           <Link to="/about">
             <Button variant="ghost" className={"hover:cursor-pointer"}>About</Button>
           </Link>
-          {/* <NewIdeaModal />  */}
           <Button variant="ghost" size="icon" className={"hover:cursor-pointer"} onClick={() => setIsDarkMode(!isDarkMode)} aria-label="Toggle dark mode">
             {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
