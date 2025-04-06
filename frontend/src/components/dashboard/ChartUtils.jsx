@@ -7,8 +7,8 @@ export const CustomTooltip = ({ active, payload, label }) => {
       <div 
         className="text-popover-foreground p-3 rounded-md border shadow-md text-sm"
         style={{
-          backgroundColor: 'rgba(24, 24, 27, 0.75)', // dark gray w/ opacity
-          backdropFilter: 'blur(2px)' // optional: adds a soft blur
+          backgroundColor: 'rgba(24, 24, 27, 0.75)', 
+          backdropFilter: 'blur(2px)' 
         }}
       >
         <p className="font-semibold mb-1">{data.title || label}</p>

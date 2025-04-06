@@ -1,8 +1,4 @@
 import React, { useMemo } from 'react';
-// import {
-//   ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, 
-//   CartesianGrid, Tooltip, Cell
-// } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { CustomTooltip } from './ChartUtils';
 import {
@@ -13,10 +9,10 @@ import {
 const ROIScatterChart = ({ filteredIdeas }) => {
   const getPriorityColor = (priority) => {
     switch (priority?.toLowerCase()) {
-      case 'high': return '#10b981'; // green
-      case 'medium': return '#f59e0b'; // amber
-      case 'low': return '#ef4444'; // red
-      default: return '#6b7280'; // gray
+      case 'high': return '#10b981'; 
+      case 'medium': return '#f59e0b'; 
+      case 'low': return '#ef4444'; 
+      default: return '#6b7280'; 
     }
   };
   
@@ -37,8 +33,8 @@ const ROIScatterChart = ({ filteredIdeas }) => {
   );
 
   return (
-    
-    <Card className="shadow-md hover:shadow-lg transition-shadow">
+
+    <Card className="shadow-md hover:shadow-lg transition-shadow hover:shadow-muted/50">
       <CardHeader className="pb-2">
         <CardTitle>ROI vs Effort</CardTitle>
         <CardDescription>Bubble size represents number of votes</CardDescription>

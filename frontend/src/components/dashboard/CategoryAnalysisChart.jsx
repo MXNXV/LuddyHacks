@@ -26,7 +26,7 @@ const CategoryAnalysisChart = ({ filteredIdeas }) => {
   }, [filteredIdeas]);
 
   return (
-    <Card>
+    <Card className="shadow-md hover:shadow-lg transition-shadow hover:shadow-muted/50">
       <CardHeader className="pb-2">
         <CardTitle>Category Analysis</CardTitle>
         <CardDescription>Feature count and average score by category</CardDescription>
