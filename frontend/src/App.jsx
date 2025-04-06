@@ -40,8 +40,9 @@ function App() {
         </Link>
         <div className="flex items-center gap-2">
         <Link to="/dashboard">
-            <Button variant="ghost" size="icon" className={"hover:cursor-pointer"} aria-label="Dashboard">
+            <Button variant="ghost" className={"hover:cursor-pointer"}>
               <LayoutDashboard className="h-5 w-5" />
+              Dashboard
             </Button>
           </Link>
           <Link to="/about">
