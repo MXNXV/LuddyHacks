@@ -8,7 +8,7 @@
 :root {
   --radius: 0.625rem; /* Keep existing radius */
 
-  --background: oklch(0.98 0.006 255); /* slate-50 */
+  --background: oklch(0.95 0.012 255); /* slate-100 */
   --foreground: oklch(0.29 0.023 255); /* slate-800 */
   --card: oklch(0.98 0.006 255); /* slate-50 */
   --card-foreground: oklch(0.29 0.023 255); /* slate-800 */
@@ -25,6 +25,7 @@
 
   /* Cyan Primary */
   --primary: oklch(0.65 0.18 199); /* cyan-600 */
+  --opposite: oklch(0.78 0.24 126); /* lime-400 - darker */
   --primary-foreground: oklch(0.99 0.003 199); /* cyan-50 - adjusted for contrast */
   --ring: oklch(0.71 0.17 198 / 0.5); /* cyan-500 with alpha */
 
@@ -70,6 +71,7 @@
 
   /* Lime Primary */
   --primary: oklch(0.88 0.24 126); /* lime-400 */
+  --opposite: oklch(0.65 0.18 199); /* cyan-600 */
   --primary-foreground: oklch(0.2 0.05 126); /* lime-950 - adjusted for contrast */
   --ring: oklch(0.88 0.24 126 / 0.5); /* lime-400 with alpha */
 
@@ -109,6 +111,7 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  --color-opposite: var(--opposite);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
