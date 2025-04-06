@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, XAxis, YAxis, 
-  CartesianGrid, Tooltip, Legend, Cell, ComposedChart, Line
+  CartesianGrid, Tooltip, Legend, Cell, ComposedChart, Line, ZAxis // 👈 add this
 } from 'recharts';
+
 import { db } from "@/lib/firebaseConfig";
 import { collection, query, onSnapshot } from "firebase/firestore";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { LoaderCircle } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { TypeAnimation } from 'react-type-animation';
 
 const DashboardPage = () => {
   // Setup state variables
@@ -18,6 +21,8 @@ const DashboardPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPriority, setSelectedPriority] = useState('All');
   const [sortBy, setSortBy] = useState('composite_score');
+  const [selectedFeature, setSelectedFeature] = useState(null);
+  const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
     setIsLoading(true);
@@ -201,7 +206,88 @@ const DashboardPage = () => {
     }
     return null;
   };
+  
+  const toggleFeature = (docId) => {
+    setSelectedFeature(selectedFeature === docId ? null : docId);
+    setActiveStep(0); // Reset step when toggling features
+  };
 
+  const renderMetricsChart = (idea) => {
+    const metricsData = [
+      { name: 'ROI', value: idea.roi || 0 },
+      { name: 'Effort', value: idea.effort || 0 },
+      { name: 'Risk', value: idea.risk || 0 },
+      { name: 'Alignment', value: idea.alignment || 0 }
+    ];
+
+    return (
+      <div className="h-64 mt-6">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={metricsData} margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis domain={[0, 10]} />
+            <Tooltip />
+            <Bar dataKey="value" name="Score">
+              {metricsData.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`}
+                  fill={index === 0 ? '#10B981' : index === 1 ? '#F59E0B' : index === 2 ? '#EF4444' : '#3B82F6'}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    );
+  };
+
+  const renderReActAnalysis = (idea) => {
+    const steps = [
+      {
+        thought: "Analyzing feature metrics...",
+        analysis: `This ${idea.category || 'feature'} has received ${idea.votes || 0} votes, indicating ${
+          (idea.votes || 0) > 80 ? 'very strong' : (idea.votes || 0) > 60 ? 'strong' : 'moderate'
+        } user interest. The ROI score of ${idea.roi || 0}/10 suggests ${
+          (idea.roi || 0) >= 8 ? 'exceptional' : (idea.roi || 0) >= 6 ? 'good' : 'moderate'
+        } potential value.`
+      },
+      {
+        thought: "Evaluating implementation complexity...",
+        analysis: `Implementation effort is rated ${idea.effort || 0}/10 (${
+          (idea.effort || 0) >= 7 ? 'high' : (idea.effort || 0) >= 4 ? 'moderate' : 'low'
+        }) with risk level ${idea.risk || 0}/5 (${
+          (idea.risk || 0) >= 4 ? 'significant' : (idea.risk || 0) >= 2 ? 'moderate' : 'low'
+        }). ${idea.reasoning?.effort || 'Consider the implementation complexity carefully.'}`
+      },
+      {
+        thought: "Assessing strategic alignment...",
+        analysis: `Strategic alignment score: ${idea.alignment || 0}/5. ${idea.reasoning?.alignment || 'Evaluate how this aligns with organizational goals.'}`
+      },
+      {
+        thought: "Calculating value metrics...",
+        analysis: `Composite score: ${(idea.composite_score || 0).toFixed(2)}. This places the feature in ${
+          (idea.composite_score || 0) >= 1 ? 'high' : (idea.composite_score || 0) >= 0.6 ? 'medium' : 'low'
+        } priority category. ${idea.explanation || ''}`
+      }
+    ];
+    return (
+      <div className="mt-4 space-y-4">
+        <TypeAnimation
+          sequence={[
+            steps[activeStep].thought,
+            1000,
+            steps[activeStep].analysis,
+            2000,
+          ]}
+          wrapper="div"
+          cursor={true}
+          repeat={0}
+          className="font-mono text-sm"
+        />
+      </div>
+    );
+  };
   
   if (isLoading) {
     return (
@@ -229,6 +315,7 @@ const DashboardPage = () => {
     );
   }
   
+
   return (
     <div className="container mx-auto px-4 py-6 lg:px-8 lg:py-8 max-w-7xl">
       <h1 className="text-3xl font-bold mb-6">Feature Prioritization Dashboard</h1>
@@ -287,48 +374,47 @@ const DashboardPage = () => {
   {/* ROI vs Effort Scatter Chart */}
   {/* <Card> */}
   <Card className="shadow-md hover:shadow-lg transition-shadow">
-    <CardHeader className="pb-2">
-      <CardTitle>ROI vs Effort</CardTitle>
-      <CardDescription>Bubble size represents number of votes</CardDescription>
-    </CardHeader>
-    <CardContent className="h-[350px]">
-      <ResponsiveContainer width="100%" height="100%">
-        
-        <ScatterChart margin={{ top: 0, right: 30, bottom: 20, left: 10 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
-            type="number" 
-            dataKey="x" 
-            name="Effort" 
-            label={{ value: 'Effort', position: 'insideBottom', offset: -5 }}
-          />
-          <YAxis 
-            type="number" 
-            dataKey="y" 
-            name="ROI" 
-            label={{ value: 'ROI', angle: -90, position: 'insideLeft' }}
-          />
-          <Tooltip cursor={{ strokeDasharray: '3 3'}} content={<CustomTooltip />} />
-          {/* <Legend /> */}
-          <Scatter 
-            name="Features" 
-            data={scatterData} 
-            fill="#8884d8"
-          >
-            {scatterData.map((entry, index) => (
-              <Cell 
-                key={`cell-${index}`} 
-                fill={getPriorityColor(entry.priority)} 
-                fillOpacity={0.7}
-                r={Math.max(6, Math.min(20, ((entry.votes || 0) / 10) + 6))}
-              />
-            ))}
-          </Scatter>
-        </ScatterChart>
-        
-      </ResponsiveContainer>
-    </CardContent>
-  </Card>
+  <CardHeader className="pb-2">
+    <CardTitle>ROI vs Effort</CardTitle>
+    <CardDescription>Bubble size represents number of votes</CardDescription>
+  </CardHeader>
+  <CardContent className="h-[350px]">
+    <ResponsiveContainer width="100%" height="100%">
+      <ScatterChart margin={{ top: 0, right: 30, bottom: 20, left: 10 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis 
+          type="number" 
+          dataKey="x" 
+          name="Effort" 
+          label={{ value: 'Effort', position: 'insideBottom', offset: -5 }}
+        />
+        <YAxis 
+          type="number" 
+          dataKey="y" 
+          name="ROI" 
+          label={{ value: 'ROI', angle: -90, position: 'insideLeft' }}
+        />
+        <ZAxis dataKey="z" range={[60, 400]} name="Votes" />
+        <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<CustomTooltip />} />
+        <Scatter 
+          name="Features" 
+          data={scatterData} 
+          fill="#8884d8" 
+          shape="circle"
+        >
+          {scatterData.map((entry, index) => (
+            <Cell 
+              key={`cell-${index}`} 
+              fill={getPriorityColor(entry.priority)} 
+              fillOpacity={0.7}
+            />
+          ))}
+        </Scatter>
+      </ScatterChart>
+    </ResponsiveContainer>
+  </CardContent>
+</Card>
+
 
   {/* Top Features Bar Chart */}
   <Card>
@@ -450,85 +536,152 @@ const DashboardPage = () => {
       </div>
 
         {/* Feature Table */}
-<Card>
-  <CardHeader className="pb-2">
-    <CardTitle>Feature Details</CardTitle>
-    <CardDescription>
-      {filteredIdeas.length} feature{filteredIdeas.length !== 1 ? 's' : ''} matching current filters
-    </CardDescription>
-  </CardHeader>
-  <CardContent>
-    <div className="overflow-x-auto rounded-md border">
-      <table className="w-full text-sm divide-y divide-border">
-        <thead className="bg-muted/30">
-          <tr>
-            <th scope="col" className="px-4 py-3 text-left font-medium">Title</th>
-            <th scope="col" className="px-4 py-3 text-left font-medium">Category</th>
-            <th scope="col" className="px-4 py-3 text-center font-medium">Votes</th>
-            <th scope="col" className="px-4 py-3 text-center font-medium">ROI</th>
-            <th scope="col" className="px-4 py-3 text-center font-medium">Effort</th>
-            <th scope="col" className="px-4 py-3 text-center font-medium">Risk</th>
-            <th scope="col" className="px-4 py-3 text-center font-medium">Score</th>
-            <th scope="col" className="px-4 py-3 text-left font-medium">Priority</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border bg-card">
-          {filteredIdeas.length > 0 ? filteredIdeas.map((idea) => (
-            <tr key={idea.docId} className="hover:bg-muted/50 transition-colors">
-              <td className="px-4 py-3 font-medium">{idea.title}</td>
-              <td className="px-4 py-3">{idea.category || '-'}</td>
-              <td className="px-4 py-3 text-center">{idea.votes ?? '-'}</td>
-              <td className="px-4 py-3 text-center">{idea.roi ?? '-'}</td>
-              <td className="px-4 py-3 text-center">{idea.effort ?? '-'}</td>
-              <td className="px-4 py-3 text-center">{idea.risk ?? '-'}</td>
-              <td className="px-4 py-3 text-center font-medium">
-                {idea.composite_score !== undefined && (
-                  <span
-                    className="px-2 py-1 rounded-md"
-                    style={{
-                      backgroundColor: idea.composite_score > 0.7 
-                        ? 'rgba(16, 185, 129, 0.2)' // green
-                        : idea.composite_score > 0.5 
-                          ? 'rgba(245, 158, 11, 0.2)' // amber
-                          : 'rgba(239, 68, 68, 0.2)', // red
-                      color: idea.composite_score > 0.7 
-                        ? '#10b981' // green
-                        : idea.composite_score > 0.5 
-                          ? '#f59e0b' // amber
-                          : '#ef4444' // red
-                    }}
-                  >
-                    {idea.composite_score.toFixed(2)}
-                  </span>
+
+        <Card>
+        <CardHeader className="pb-2">
+          <CardTitle>Feature Details</CardTitle>
+          <CardDescription>
+            {filteredIdeas.length} feature{filteredIdeas.length !== 1 ? 's' : ''} matching current filters
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto rounded-md border">
+            <table className="w-full text-sm divide-y divide-border">
+              <thead className="bg-muted/30">
+                <tr>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">Title</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">Category</th>
+                  <th scope="col" className="px-4 py-3 text-center font-medium">Votes</th>
+                  <th scope="col" className="px-4 py-3 text-center font-medium">ROI</th>
+                  <th scope="col" className="px-4 py-3 text-center font-medium">Effort</th>
+                  <th scope="col" className="px-4 py-3 text-center font-medium">Risk</th>
+                  <th scope="col" className="px-4 py-3 text-center font-medium">Score</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">Priority</th>
+                  <th scope="col" className="px-4 py-3 text-center font-medium"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border bg-card">
+                {filteredIdeas.length > 0 ? filteredIdeas.map((idea) => (
+                  <React.Fragment key={idea.docId}>
+                    <tr 
+                      className="hover:bg-muted/50 transition-colors cursor-pointer"
+                      onClick={() => toggleFeature(idea.docId)}
+                    >
+                      <td className="px-4 py-3 font-medium">{idea.title}</td>
+                      <td className="px-4 py-3">{idea.category || '-'}</td>
+                      <td className="px-4 py-3 text-center">{idea.votes ?? '-'}</td>
+                      <td className="px-4 py-3 text-center">{idea.roi ?? '-'}</td>
+                      <td className="px-4 py-3 text-center">{idea.effort ?? '-'}</td>
+                      <td className="px-4 py-3 text-center">{idea.risk ?? '-'}</td>
+                      <td className="px-4 py-3 text-center font-medium">
+                        {idea.composite_score !== undefined && (
+                          <span
+                            className="px-2 py-1 rounded-md"
+                            style={{
+                              backgroundColor: idea.composite_score > 0.7 
+                                ? 'rgba(16, 185, 129, 0.2)' // green
+                                : idea.composite_score > 0.5 
+                                  ? 'rgba(245, 158, 11, 0.2)' // amber
+                                  : 'rgba(239, 68, 68, 0.2)', // red
+                              color: idea.composite_score > 0.7 
+                                ? '#10b981' // green
+                                : idea.composite_score > 0.5 
+                                  ? '#f59e0b' // amber
+                                  : '#ef4444' // red
+                            }}
+                          >
+                            {idea.composite_score.toFixed(2)}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {idea.priority ? (
+                          <Badge
+                            variant="outline"
+                            style={{
+                              borderColor: getPriorityColor(idea.priority),
+                              color: getPriorityColor(idea.priority),
+                              backgroundColor: `${getPriorityColor(idea.priority)}20`,
+                            }}
+                          >
+                            {idea.priority}
+                          </Badge>
+                        ) : '-'}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        {selectedFeature === idea.docId ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                      </td>
+                    </tr>
+                    {selectedFeature === idea.docId && (
+                      <tr className="bg-muted/20">
+                        <td colSpan={9} className="py-6 px-8">
+                          <div className="space-y-6">
+                            <div>
+                              <h3 className="font-semibold mb-2">ReAct Analysis</h3>
+                              {renderReActAnalysis(idea)}
+                            </div>
+                            
+                            {idea.description && (
+                              <div>
+                                <h3 className="font-semibold mb-2">Description</h3>
+                                <p className="text-muted-foreground">{idea.description}</p>
+                              </div>
+                            )}
+                            
+                            <div>
+                              <h3 className="font-semibold mb-2">Metrics Analysis</h3>
+                              {renderMetricsChart(idea)}
+                            </div>
+                            
+                            {idea.reasoning && (
+                              <div>
+                                <h3 className="font-semibold mb-2">Detailed Reasoning</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  {idea.reasoning.effort && (
+                                    <div className="bg-muted/30 p-4 rounded-md">
+                                      <h4 className="font-medium mb-1">Effort Assessment</h4>
+                                      <p className="text-muted-foreground">{idea.reasoning.effort}</p>
+                                    </div>
+                                  )}
+                                  {idea.reasoning.alignment && (
+                                    <div className="bg-muted/30 p-4 rounded-md">
+                                      <h4 className="font-medium mb-1">Alignment Analysis</h4>
+                                      <p className="text-muted-foreground">{idea.reasoning.alignment}</p>
+                                    </div>
+                                  )}
+                                  {idea.reasoning.roi && (
+                                    <div className="bg-muted/30 p-4 rounded-md">
+                                      <h4 className="font-medium mb-1">ROI Potential</h4>
+                                      <p className="text-muted-foreground">{idea.reasoning.roi}</p>
+                                    </div>
+                                  )}
+                                  {idea.reasoning.risk && (
+                                    <div className="bg-muted/30 p-4 rounded-md">
+                                      <h4 className="font-medium mb-1">Risk Assessment</h4>
+                                      <p className="text-muted-foreground">{idea.reasoning.risk}</p>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                )) : (
+                  <tr>
+                    <td colSpan="9" className="text-center py-8 text-muted-foreground">
+                      No features match the current filters
+                    </td>
+                  </tr>
                 )}
-              </td>
-              <td className="px-4 py-3">
-                {idea.priority ? (
-                  <Badge
-                    variant="outline"
-                    style={{
-                      borderColor: getPriorityColor(idea.priority),
-                      color: getPriorityColor(idea.priority),
-                      backgroundColor: `${getPriorityColor(idea.priority)}20`,
-                    }}
-                  >
-                    {idea.priority}
-                  </Badge>
-                ) : '-'}
-              </td>
-            </tr>
-          )) : (
-            <tr>
-              <td colSpan="8" className="text-center py-8 text-muted-foreground">
-                No features match the current filters
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  </CardContent>
-</Card>
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
     </div>
   );
 

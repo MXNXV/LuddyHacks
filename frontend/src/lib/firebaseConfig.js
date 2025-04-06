@@ -18,6 +18,7 @@ const app = initializeApp(firebaseConfig);
 const db = initializeFirestore(app, {
     localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
+console.log("ENV projectId:", import.meta.env.VITE_FIREBASE_PROJECT_ID);
 
 console.log("Firebase App Initialized:", app.name); 
 
