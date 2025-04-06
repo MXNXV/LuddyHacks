@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, XAxis, YAxis, 
-  CartesianGrid, Tooltip, Legend, Cell, ComposedChart, Line, ZAxis // 👈 add this
+  CartesianGrid, Tooltip, Legend, Cell, ComposedChart, Line, ZAxis 
 } from 'recharts';
 
 import { db } from "@/lib/firebaseConfig";
@@ -394,7 +394,7 @@ const DashboardPage = () => {
           name="ROI" 
           label={{ value: 'ROI', angle: -90, position: 'insideLeft' }}
         />
-        <ZAxis dataKey="z" range={[60, 400]} name="Votes" />
+        <ZAxis dataKey="z" range={[60, 800]} name="Votes" />
         <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<CustomTooltip />} />
         <Scatter 
           name="Features" 
