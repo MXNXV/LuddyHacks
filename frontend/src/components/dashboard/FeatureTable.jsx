@@ -7,7 +7,7 @@ import FeatureDetails from './FeatureDetails';
 
 const FeatureTable = ({ filteredIdeas, selectedFeature, toggleFeature }) => {
   return (
-    <Card>
+    <Card className="shadow-md hover:shadow-lg transition-shadow hover:shadow-muted/50">
       <CardHeader className="pb-2">
         <CardTitle>Feature Details</CardTitle>
         <CardDescription>
@@ -49,15 +49,15 @@ const FeatureTable = ({ filteredIdeas, selectedFeature, toggleFeature }) => {
                           className="px-2 py-1 rounded-md"
                           style={{
                             backgroundColor: idea.composite_score > 0.7 
-                              ? 'rgba(16, 185, 129, 0.2)' // green
+                              ? 'rgba(16, 185, 129, 0.2)' 
                               : idea.composite_score > 0.5 
-                                ? 'rgba(245, 158, 11, 0.2)' // amber
-                                : 'rgba(239, 68, 68, 0.2)', // red
+                                ? 'rgba(245, 158, 11, 0.2)'
+                                : 'rgba(239, 68, 68, 0.2)',
                             color: idea.composite_score > 0.7 
-                              ? '#10b981' // green
+                              ? '#10b981'
                               : idea.composite_score > 0.5 
-                                ? '#f59e0b' // amber
-                                : '#ef4444' // red
+                                ? '#f59e0b' 
+                                : '#ef4444' 
                           }}
                         >
                           {idea.composite_score.toFixed(2)}

@@ -34,7 +34,7 @@ const teamMembers = [
 
 export default function AboutPage() {
   return (
-    <div className="mt-10 p-6 max-w-5xl mx-auto bg-card text-card-foreground rounded-xl shadow-xl">
+    <div className="mt-10 p-6 max-w-5xl mx-auto bg-card text-card-foreground rounded-xl shadow-xl mb-10">
       <div className="flex justify-center ">
       <span className="text-4xl font-bold text-center mb-6 text-primary">About Us – The Creators of Service </span>
       <span className="text-4xl font-bold text-center mb-6 text-opposite">WOW</span>
@@ -65,7 +65,7 @@ export default function AboutPage() {
           </motion.div>
         ))}
       </div>
-      <div className="mt-12 text-center">
+      <div className="mt-12 text-center ">
         <h2 className="text-2xl font-bold text-primary mb-2">Why We Built This</h2>
         <p className="max-w-3xl mx-auto text-lg text-muted-foreground">
           Organizations often struggle to make sense of hundreds of ideas. Our AI agent evaluates them based on effort, ROI, and strategic value using <strong>ReAct-style reasoning</strong>. It's explainable, adjustable, and visual – just like it should be.

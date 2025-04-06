@@ -23,10 +23,10 @@ const MetricsChart = ({ idea }) => {
               <Cell 
                 key={`cell-${index}`}
                 fill={
-                  index === 0 ? '#10B981' : // ROI - green
-                  index === 1 ? '#F59E0B' : // Effort - amber
-                  index === 2 ? '#EF4444' : // Risk - red
-                  '#3B82F6'                 // Alignment - blue
+                  index === 0 ? '#10B981' : 
+                  index === 1 ? '#F59E0B' : 
+                  index === 2 ? '#EF4444' : 
+                  '#3B82F6'                 
                 }
               />
             ))}

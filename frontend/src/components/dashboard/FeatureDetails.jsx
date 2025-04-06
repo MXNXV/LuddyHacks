@@ -7,7 +7,7 @@ const FeatureDetails = ({ idea }) => {
     <div className="space-y-6">
       <div>
         <h3 className="font-semibold mb-2">ReAct Analysis</h3>
-        {/* <ReActAnalysis idea={idea} /> */}
+        <ReActAnalysis idea={idea} />
       </div>
       
       {idea.description && (

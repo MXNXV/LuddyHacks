@@ -17,18 +17,18 @@ const NewIdeaModal = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleFormSubmitSuccess = () => {
-    setIsOpen(false); // Close the dialog on successful submission
-    // Optionally: trigger a refresh of the idea list here
+    setIsOpen(false); 
+
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="default"> {/* Use default variant for primary color */}
+        <Button variant="default" className={'hover:cursor-pointer'}> 
           <PlusCircle className="mr-2 h-4 w-4" /> New Idea
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[480px]"> {/* Adjust width as needed */}
+      <DialogContent className="sm:max-w-[480px]"> 
         <DialogHeader>
           <DialogTitle>Submit a New Idea</DialogTitle>
           <DialogDescription>
@@ -38,12 +38,6 @@ const NewIdeaModal = () => {
         <div className="py-4">
           <NewIdeaForm onSubmitSuccess={handleFormSubmitSuccess} />
         </div>
-         {/* Footer is handled within the Form component now */}
-         {/* <DialogFooter>
-           <DialogClose asChild>
-             <Button type="button" variant="secondary">Cancel</Button>
-           </DialogClose>
-         </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

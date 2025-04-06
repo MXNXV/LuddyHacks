@@ -25,7 +25,7 @@ const MetricsDistributionChart = ({ filteredIdeas }) => {
   }, [filteredIdeas]);
 
   return (
-    <Card>
+    <Card className="shadow-md hover:shadow-lg transition-shadow hover:shadow-muted/50">
       <CardHeader className="pb-2">
         <CardTitle>Metrics Distribution</CardTitle>
         <CardDescription>Average value for key metrics</CardDescription>

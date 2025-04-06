@@ -20,8 +20,8 @@ const TopFeaturesChart = ({ filteredIdeas, sortBy }) => {
   );
 
   return (
-    <Card>
-      <CardHeader className="pb-2">
+    <Card className="shadow-md hover:shadow-lg transition-shadow hover:shadow-muted/50">
+      <CardHeader className="pb-2 ">
         <CardTitle>Top Features</CardTitle>
         <CardDescription>Top 8 by {sortBy.replace('_asc', '').replace('_', ' ')}</CardDescription>
       </CardHeader>
